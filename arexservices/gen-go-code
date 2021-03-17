@@ -1,0 +1,1 @@
+protoc --go_out=$PWD --go_opt=paths=source_relative  --go-grpc_out=$PWD --go-grpc_opt=paths=source_relative arexservices.proto

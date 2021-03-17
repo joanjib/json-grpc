@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package arexservices;
+
+option go_package = ".;arexservices";
+
+message Money {
+	int32 				numeral				= 1;
+	int32				decimal				= 2;
+}
+
+message Empty {
+
+}
+
+message Id {
+	int32 				id					= 1;
+}
+
+message Issuer {
+	string 				fiscal_identity 	= 1;
+	string 				name				= 2;
+	string 				surname				= 3;
+	Money  				balance				= 4; 
+}
+
+message Investor {
+	string 				fiscal_identity 	= 1;
+	string 				name				= 2;
+	string 				surname				= 3;
+	Money  				balance				= 4; 
+}
+	
+message Invoice {
+	string 				fiscal_identity 	= 1;
+	int32				issuer_id			= 2;
+	Money				amount				= 3;
+	string 				creation_time		= 4;
+	string        		state				= 5;
+}
+
+message SellOrder {
+	int32 				invoice_id			= 1;
+	Money				size				= 2;
+	Money				amount 				= 3;
+	string 				creation_time		= 4;
+	string		 		state				= 5;
+}
+
+message Ledger	{
+	int32				investor_id			= 1;
+	int32				sell_order_id		= 2;
+	Money				size				= 3;
+	Money				amount 				= 4;
+	Money				balance 			= 5;
+	int32				discount			= 6; 	// discount * 100
+	string 				creation_time		= 7;
+	Money				expected_profit		= 8;
+}
+
+message InvoiceFinancing {
+	SellOrder 			sell_order			= 1;
+	Invoice 			invoice				= 2;
+}
+
+service ArexServices {
+	
+	// Issuer API
+	rpc AddIssuer		(Issuer) 		returns (Id)	 			{}
+	rpc RemoveIssuer	(Id)			returns (Empty)				{}
+	rpc ListIssuers		(Empty)			returns (stream Issuer) 	{}
+
+	// Investor API
+	rpc AddInvestor		(Investor) 		returns (Id)	 			{}
+	rpc RemoveInvestor	(Id)			returns (Empty)				{}
+	rpc ListInvestors	(Empty)			returns (stream Investor) 	{}
+	
+
+	// SellOrder API & Invoices
+	// Starts an invoice financing process with a SellOrder + Invoice. Returns the id of the SellOrder.
+	rpc StartInvoiceFinancing (InvoiceFinancing) 	returns (Id)	{}
+	// for any reason the issuer wants to reverse the financing process, he uses this procedure
+	rpc ReverseInvoiceFinancing (Id) 				returns (Empty)	{}
+	// allows listing of the SellOrders to Investors.
+	rpc ListSellOrders	(Empty)			returns (stream SellOrder) 	{}
+	rpc ListInvoices	(Empty)			returns (stream Invoice) 	{}
+
+	// Bidding API: process done into the Ledger.
+	// Add a Bid in the Ledger and returns the Id of the Ledger entry 
+	rpc AddBid			(Ledger)		returns (Id)				{}
+	rpc RemoveBid		(Id)			returns (Empty)				{}
+	// list all bids in all states
+	rpc ListBids		(Empty)			returns (stream Ledger)		{}
+
+}
