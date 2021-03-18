@@ -3,36 +3,36 @@ package main
 import (
 
 	"fmt"
-	"gorm.io/gorm"
-	"gorm.io/driver/postgres"
+	"num/db"
+	"num/models"
+	"unsafe"
 )
-
-type Test struct {
-
-	gorm.Model
-	Price		string `gorm:"type:numeric(11,2)"`
-}
 
 func main () {
 
-	dsn := "host=localhost user=joan password=joan123 dbname=num port=5432 sslmode=disable "
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-	    panic("failed to connect database")
+
+	if db.Db == nil  {
+		fmt.Println("nul")
 	}
+	db := db.Db
 
-	db.AutoMigrate(&Test{})
-	var test *Test
 
-	test = &Test{Price: "101.2299"}
+	db.AutoMigrate(&models.Client{})
+	var test *models.Client
+
+	test = &models.Client{Balance: "-101.2299"}
 
 	db.Create(test)
 	fmt.Println(test)
-	test = &Test{}
+	test = &models.Client{}
 
 
 	db.First(test, 1)
 
 	fmt.Println(test)
+
+	var a uint  = 22
+
+	fmt.Println("size of uint",unsafe.Sizeof(a))
 }
 
