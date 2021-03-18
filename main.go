@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"num/db"
 	"num/models"
-	"unsafe"
 )
 
 func main () {
@@ -18,21 +17,19 @@ func main () {
 
 
 	db.AutoMigrate(&models.Client{})
+	db.AutoMigrate(&models.Invoice{})
 	var test *models.Client
 
-	test = &models.Client{Balance: "-101.2299"}
+	test = &models.Client{Balance: "101.2299"}
 
 	db.Create(test)
 	fmt.Println(test)
-	test = &models.Client{}
 
+	id := test.ID
 
-	db.First(test, 1)
+	var invoice *models.Invoice = &models.Invoice{ClientID:id,Amount:"100.22",State:models.Rejected}
+	db.Create(invoice)
+	fmt.Println(invoice)
 
-	fmt.Println(test)
-
-	var a uint  = 22
-
-	fmt.Println("size of uint",unsafe.Sizeof(a))
 }
 
