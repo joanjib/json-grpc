@@ -18,6 +18,7 @@ func main () {
 
 	db.AutoMigrate(&models.Client{})
 	db.AutoMigrate(&models.Invoice{})
+	db.AutoMigrate(&models.SellOrder{})
 	var test *models.Client
 
 	test = &models.Client{Balance: "101.2299"}
@@ -27,9 +28,14 @@ func main () {
 
 	id := test.ID
 
-	var invoice *models.Invoice = &models.Invoice{ClientID:id,Amount:"100.22",State:models.Rejected}
+	var invoice *models.Invoice = &models.Invoice{ClientID:id,Amount:"100.22",State:models.InvoiceRejected}
 	db.Create(invoice)
+	id = invoice.ID
 	fmt.Println(invoice)
+
+	var sellOrder *models.SellOrder = &models.SellOrder{InvoiceID:id,Size:"1000.00",Amount:"900.00",State:models.SellOrderOngoing}
+	db.Create(sellOrder)
+	fmt.Println(sellOrder)
 
 }
 
