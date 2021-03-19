@@ -7,3 +7,5 @@ psql -U postgres -d "num" -f create-db.sql
 psql -d num -f tables.sql 
 # backup of the database num:
 sudo docker exec -i  postgres-arex  pg_dump --username postgres num > bk
+# execute a psql command into a container:
+sudo docker exec -it postgres-arex  psql -U postgres -d num

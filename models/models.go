@@ -61,3 +61,16 @@ type SellOrder struct {
 	FinanAmount			string			`gorm:"type:amount_type_calc;default:0"`
 	State				SellOrderState	`gorm:"type:sell_order_state"`
 }
+
+
+type Ledger struct {
+	gorm.Model
+	InvestorID			uint
+	SellOrderID			uint
+	Size				string			`gorm:"type:amount_type"`
+	Amount				string			`gorm:"type:amount_type"`
+	Balance				string			`gorm:"type:amount_type"`
+	discount			string			`gorm:"type:discount_type"`
+	expectedProfit		string			`gorm:"type:amount_type_calc"`
+	IsAdjusted			bool			`gorm:"default:false"`				// adjusted to feet the size of an invoice.
+}
