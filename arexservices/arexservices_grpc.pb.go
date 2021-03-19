@@ -19,13 +19,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ArexServicesClient interface {
 	// Issuer API
-	AddIssuer(ctx context.Context, in *Issuer, opts ...grpc.CallOption) (*Id, error)
-	RemoveIssuer(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
-	ListIssuers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListIssuersClient, error)
-	// Investor API
-	AddInvestor(ctx context.Context, in *Investor, opts ...grpc.CallOption) (*Id, error)
-	RemoveInvestor(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
-	ListInvestors(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListInvestorsClient, error)
+	AddClient(ctx context.Context, in *Client, opts ...grpc.CallOption) (*Id, error)
+	RemoveClient(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
+	ListClients(ctx context.Context, in *IsInvestor, opts ...grpc.CallOption) (ArexServices_ListClientsClient, error)
 	// SellOrder API & Invoices
 	// Starts an invoice financing process with a SellOrder + Invoice. Returns the id of the SellOrder.
 	StartInvoiceFinancing(ctx context.Context, in *InvoiceFinancing, opts ...grpc.CallOption) (*Id, error)
@@ -50,30 +46,30 @@ func NewArexServicesClient(cc grpc.ClientConnInterface) ArexServicesClient {
 	return &arexServicesClient{cc}
 }
 
-func (c *arexServicesClient) AddIssuer(ctx context.Context, in *Issuer, opts ...grpc.CallOption) (*Id, error) {
+func (c *arexServicesClient) AddClient(ctx context.Context, in *Client, opts ...grpc.CallOption) (*Id, error) {
 	out := new(Id)
-	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/AddIssuer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/AddClient", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *arexServicesClient) RemoveIssuer(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error) {
+func (c *arexServicesClient) RemoveClient(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error) {
 	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/RemoveIssuer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/RemoveClient", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *arexServicesClient) ListIssuers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListIssuersClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[0], "/arexservices.ArexServices/ListIssuers", opts...)
+func (c *arexServicesClient) ListClients(ctx context.Context, in *IsInvestor, opts ...grpc.CallOption) (ArexServices_ListClientsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[0], "/arexservices.ArexServices/ListClients", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &arexServicesListIssuersClient{stream}
+	x := &arexServicesListClientsClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -83,67 +79,17 @@ func (c *arexServicesClient) ListIssuers(ctx context.Context, in *Empty, opts ..
 	return x, nil
 }
 
-type ArexServices_ListIssuersClient interface {
-	Recv() (*Issuer, error)
+type ArexServices_ListClientsClient interface {
+	Recv() (*Client, error)
 	grpc.ClientStream
 }
 
-type arexServicesListIssuersClient struct {
+type arexServicesListClientsClient struct {
 	grpc.ClientStream
 }
 
-func (x *arexServicesListIssuersClient) Recv() (*Issuer, error) {
-	m := new(Issuer)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
-}
-
-func (c *arexServicesClient) AddInvestor(ctx context.Context, in *Investor, opts ...grpc.CallOption) (*Id, error) {
-	out := new(Id)
-	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/AddInvestor", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *arexServicesClient) RemoveInvestor(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/RemoveInvestor", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *arexServicesClient) ListInvestors(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListInvestorsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[1], "/arexservices.ArexServices/ListInvestors", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &arexServicesListInvestorsClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type ArexServices_ListInvestorsClient interface {
-	Recv() (*Investor, error)
-	grpc.ClientStream
-}
-
-type arexServicesListInvestorsClient struct {
-	grpc.ClientStream
-}
-
-func (x *arexServicesListInvestorsClient) Recv() (*Investor, error) {
-	m := new(Investor)
+func (x *arexServicesListClientsClient) Recv() (*Client, error) {
+	m := new(Client)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -169,7 +115,7 @@ func (c *arexServicesClient) ReverseInvoiceFinancing(ctx context.Context, in *Id
 }
 
 func (c *arexServicesClient) ListSellOrders(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListSellOrdersClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[2], "/arexservices.ArexServices/ListSellOrders", opts...)
+	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[1], "/arexservices.ArexServices/ListSellOrders", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +147,7 @@ func (x *arexServicesListSellOrdersClient) Recv() (*SellOrder, error) {
 }
 
 func (c *arexServicesClient) ListInvoices(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListInvoicesClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[3], "/arexservices.ArexServices/ListInvoices", opts...)
+	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[2], "/arexservices.ArexServices/ListInvoices", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -251,7 +197,7 @@ func (c *arexServicesClient) RemoveBid(ctx context.Context, in *Id, opts ...grpc
 }
 
 func (c *arexServicesClient) ListBids(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListBidsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[4], "/arexservices.ArexServices/ListBids", opts...)
+	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[3], "/arexservices.ArexServices/ListBids", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -287,13 +233,9 @@ func (x *arexServicesListBidsClient) Recv() (*Ledger, error) {
 // for forward compatibility
 type ArexServicesServer interface {
 	// Issuer API
-	AddIssuer(context.Context, *Issuer) (*Id, error)
-	RemoveIssuer(context.Context, *Id) (*Empty, error)
-	ListIssuers(*Empty, ArexServices_ListIssuersServer) error
-	// Investor API
-	AddInvestor(context.Context, *Investor) (*Id, error)
-	RemoveInvestor(context.Context, *Id) (*Empty, error)
-	ListInvestors(*Empty, ArexServices_ListInvestorsServer) error
+	AddClient(context.Context, *Client) (*Id, error)
+	RemoveClient(context.Context, *Id) (*Empty, error)
+	ListClients(*IsInvestor, ArexServices_ListClientsServer) error
 	// SellOrder API & Invoices
 	// Starts an invoice financing process with a SellOrder + Invoice. Returns the id of the SellOrder.
 	StartInvoiceFinancing(context.Context, *InvoiceFinancing) (*Id, error)
@@ -315,23 +257,14 @@ type ArexServicesServer interface {
 type UnimplementedArexServicesServer struct {
 }
 
-func (UnimplementedArexServicesServer) AddIssuer(context.Context, *Issuer) (*Id, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddIssuer not implemented")
+func (UnimplementedArexServicesServer) AddClient(context.Context, *Client) (*Id, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddClient not implemented")
 }
-func (UnimplementedArexServicesServer) RemoveIssuer(context.Context, *Id) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveIssuer not implemented")
+func (UnimplementedArexServicesServer) RemoveClient(context.Context, *Id) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveClient not implemented")
 }
-func (UnimplementedArexServicesServer) ListIssuers(*Empty, ArexServices_ListIssuersServer) error {
-	return status.Errorf(codes.Unimplemented, "method ListIssuers not implemented")
-}
-func (UnimplementedArexServicesServer) AddInvestor(context.Context, *Investor) (*Id, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddInvestor not implemented")
-}
-func (UnimplementedArexServicesServer) RemoveInvestor(context.Context, *Id) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveInvestor not implemented")
-}
-func (UnimplementedArexServicesServer) ListInvestors(*Empty, ArexServices_ListInvestorsServer) error {
-	return status.Errorf(codes.Unimplemented, "method ListInvestors not implemented")
+func (UnimplementedArexServicesServer) ListClients(*IsInvestor, ArexServices_ListClientsServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListClients not implemented")
 }
 func (UnimplementedArexServicesServer) StartInvoiceFinancing(context.Context, *InvoiceFinancing) (*Id, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartInvoiceFinancing not implemented")
@@ -367,117 +300,60 @@ func RegisterArexServicesServer(s grpc.ServiceRegistrar, srv ArexServicesServer)
 	s.RegisterService(&ArexServices_ServiceDesc, srv)
 }
 
-func _ArexServices_AddIssuer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Issuer)
+func _ArexServices_AddClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Client)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ArexServicesServer).AddIssuer(ctx, in)
+		return srv.(ArexServicesServer).AddClient(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/arexservices.ArexServices/AddIssuer",
+		FullMethod: "/arexservices.ArexServices/AddClient",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArexServicesServer).AddIssuer(ctx, req.(*Issuer))
+		return srv.(ArexServicesServer).AddClient(ctx, req.(*Client))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ArexServices_RemoveIssuer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ArexServices_RemoveClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Id)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ArexServicesServer).RemoveIssuer(ctx, in)
+		return srv.(ArexServicesServer).RemoveClient(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/arexservices.ArexServices/RemoveIssuer",
+		FullMethod: "/arexservices.ArexServices/RemoveClient",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArexServicesServer).RemoveIssuer(ctx, req.(*Id))
+		return srv.(ArexServicesServer).RemoveClient(ctx, req.(*Id))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ArexServices_ListIssuers_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Empty)
+func _ArexServices_ListClients_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(IsInvestor)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(ArexServicesServer).ListIssuers(m, &arexServicesListIssuersServer{stream})
+	return srv.(ArexServicesServer).ListClients(m, &arexServicesListClientsServer{stream})
 }
 
-type ArexServices_ListIssuersServer interface {
-	Send(*Issuer) error
+type ArexServices_ListClientsServer interface {
+	Send(*Client) error
 	grpc.ServerStream
 }
 
-type arexServicesListIssuersServer struct {
+type arexServicesListClientsServer struct {
 	grpc.ServerStream
 }
 
-func (x *arexServicesListIssuersServer) Send(m *Issuer) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func _ArexServices_AddInvestor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Investor)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ArexServicesServer).AddInvestor(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/arexservices.ArexServices/AddInvestor",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArexServicesServer).AddInvestor(ctx, req.(*Investor))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ArexServices_RemoveInvestor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ArexServicesServer).RemoveInvestor(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/arexservices.ArexServices/RemoveInvestor",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArexServicesServer).RemoveInvestor(ctx, req.(*Id))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ArexServices_ListInvestors_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(Empty)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(ArexServicesServer).ListInvestors(m, &arexServicesListInvestorsServer{stream})
-}
-
-type ArexServices_ListInvestorsServer interface {
-	Send(*Investor) error
-	grpc.ServerStream
-}
-
-type arexServicesListInvestorsServer struct {
-	grpc.ServerStream
-}
-
-func (x *arexServicesListInvestorsServer) Send(m *Investor) error {
+func (x *arexServicesListClientsServer) Send(m *Client) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -624,20 +500,12 @@ var ArexServices_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ArexServicesServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddIssuer",
-			Handler:    _ArexServices_AddIssuer_Handler,
+			MethodName: "AddClient",
+			Handler:    _ArexServices_AddClient_Handler,
 		},
 		{
-			MethodName: "RemoveIssuer",
-			Handler:    _ArexServices_RemoveIssuer_Handler,
-		},
-		{
-			MethodName: "AddInvestor",
-			Handler:    _ArexServices_AddInvestor_Handler,
-		},
-		{
-			MethodName: "RemoveInvestor",
-			Handler:    _ArexServices_RemoveInvestor_Handler,
+			MethodName: "RemoveClient",
+			Handler:    _ArexServices_RemoveClient_Handler,
 		},
 		{
 			MethodName: "StartInvoiceFinancing",
@@ -658,13 +526,8 @@ var ArexServices_ServiceDesc = grpc.ServiceDesc{
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "ListIssuers",
-			Handler:       _ArexServices_ListIssuers_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "ListInvestors",
-			Handler:       _ArexServices_ListInvestors_Handler,
+			StreamName:    "ListClients",
+			Handler:       _ArexServices_ListClients_Handler,
 			ServerStreams: true,
 		},
 		{

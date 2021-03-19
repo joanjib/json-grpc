@@ -12,23 +12,20 @@ message Id {
 	int64 				id					= 1;
 }
 
-message Issuer {
-	string 				fiscal_identity 	= 1;
-	string 				name				= 2;
-	string 				surname				= 3;
-	string 				balance				= 4; 	// string representation of a numeric value in postgresql
+message IsInvestor {
+	bool 				is_investor			= 1;
 }
-
-message Investor {
+message Client {
 	string 				fiscal_identity 	= 1;
 	string 				name				= 2;
 	string 				surname				= 3;
 	string 				balance				= 4; 	// string representation of a numeric value in postgresql
+	bool				is_investor			= 5;
 }
 	
 message Invoice {
 	string 				fiscal_identity 	= 1;
-	int64				issuer_id			= 2;
+	int64				client_id			= 2;
 	string				amount				= 3; 	// string representation of a numeric value in postgresql
 	string 				creation_time		= 4;
 	string        		state				= 5;
@@ -62,15 +59,9 @@ message InvoiceFinancing {
 service ArexServices {
 	
 	// Issuer API
-	rpc AddIssuer		(Issuer) 		returns (Id)	 			{}
-	rpc RemoveIssuer	(Id)			returns (Empty)				{}
-	rpc ListIssuers		(Empty)			returns (stream Issuer) 	{}
-
-	// Investor API
-	rpc AddInvestor		(Investor) 		returns (Id)	 			{}
-	rpc RemoveInvestor	(Id)			returns (Empty)				{}
-	rpc ListInvestors	(Empty)			returns (stream Investor) 	{}
-	
+	rpc AddClient		(Client) 		returns (Id)	 			{}
+	rpc RemoveClient	(Id)			returns (Empty)				{}
+	rpc ListClients		(IsInvestor)	returns (stream Client) 	{}
 
 	// SellOrder API & Invoices
 	// Starts an invoice financing process with a SellOrder + Invoice. Returns the id of the SellOrder.

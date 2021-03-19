@@ -1,7 +1,10 @@
 package models
 
-import "database/sql/driver"
-import "gorm.io/gorm"
+import (
+	"database/sql/driver"
+	"gorm.io/gorm"
+	pb "arex/arexservices"
+)
 
 type Client struct {
 	gorm.Model
@@ -11,6 +14,11 @@ type Client struct {
 	Balance				string			`gorm:"type:amount_type"`
 	IsInvestor			bool			`gorm:"default:false"`
 }
+
+func (i *Client) CastgRPC() {
+	return &pb.Client{FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
+}
+
 
 // enum InvoiceState and SellOrder definition		-		begin
 type InvoiceState string
