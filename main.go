@@ -3,6 +3,7 @@ package main
 import (
 
 	"fmt"
+	"io/ioutil"
 	"num/db"
 	"num/models"
 )
@@ -15,7 +16,15 @@ func main () {
 	}
 	db := db.Db
 
+	typesDomains, err := ioutil.ReadFile("./sql/types-domains.sql")
+    if err != nil {
+        panic(err)
+    }
 
+	r := db.Exec  (string(typesDomains)	)
+	if r.Error != nil {
+		panic(r.Error)
+	}
 	db.AutoMigrate(&models.Client{}		)
 	db.AutoMigrate(&models.Invoice{}	)
 	db.AutoMigrate(&models.SellOrder{}	)

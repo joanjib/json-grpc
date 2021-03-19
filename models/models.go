@@ -3,7 +3,7 @@ package models
 import (
 	"database/sql/driver"
 	"gorm.io/gorm"
-	pb "arex/arexservices"
+	pb "num/arexservices"
 )
 
 type Client struct {
@@ -15,7 +15,7 @@ type Client struct {
 	IsInvestor			bool			`gorm:"default:false"`
 }
 
-func (i *Client) CastgRPC() {
+func (i *Client) CastgRPC() *pb.Client {
 	return &pb.Client{FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
 }
 
