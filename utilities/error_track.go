@@ -34,8 +34,8 @@ func main () {
 
 	lines	:= strings.Split(file,"\n")
 
-	re1 := regexp.MustCompile(`(\s\s*)r\s*:=`)				// one group to capture : the spaces
-	re2 := regexp.MustCompile(`(\s\s*)([A-Za-z]+_r)\s*:=`)	// two groups to capture: the spaces and var name
+	re1 := regexp.MustCompile(`(\s\s*)r\s*:?=`)				// one group to capture : the spaces
+	re2 := regexp.MustCompile(`(\s\s*)([A-Za-z]+_r)\s*:?=`)	// two groups to capture: the spaces and var name
 
 	for _,line := range lines {
 		fmt.Fprintln(out, line)
@@ -48,7 +48,7 @@ func main () {
 
 		res = re2.FindStringSubmatch(line)
 		if len(res) == 3 {
-			fmt.Fprintln(out, res[1] +"if "+ res[2] +".Error != nil { goto ErrorTrack }")
+			fmt.Fprintln(out, res[1] +"if "+ res[2] +".Error != nil { goto ErrorTrack_"+ res[2] +" }")
 			continue
 		}
 	}

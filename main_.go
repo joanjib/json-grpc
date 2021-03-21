@@ -12,7 +12,7 @@ func main () {
 
 
 	if db.Db == nil  {
-		fmt.Println("nul")
+		panic("not initialitzed Db object")
 	}
 	db := db.Db
 
@@ -22,6 +22,16 @@ func main () {
     }
 
 	r := db.Exec  (string(typesDomains)	)
+
+	r  = 2222
+
+	r:=ddd
+	r=ddd
+
+	i_r = dddddd
+	i_r=dddddd
+	i_r:= dddddd
+	i_r   := dddddd
 
 	db.AutoMigrate(&models.Client{}		)
 	db.AutoMigrate(&models.Invoice{}	)
