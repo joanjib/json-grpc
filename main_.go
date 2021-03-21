@@ -36,20 +36,19 @@ func main () {
 		return
 	}
 
-
-
 	r = db.Exec  (string(typesDomains)	)
 
-	err = db.AutoMigrate(&models.Client{}		)
+	// migrations:
+	err = db.AutoMigrate(&models.Client{}	)
 	err = db.AutoMigrate(&models.Invoice{}	)
-	err = db.AutoMigrate(&models.SellOrder{}	)
-	err = db.AutoMigrate(&models.Ledger{}		)
+	err = db.AutoMigrate(&models.SellOrder{})
+	err = db.AutoMigrate(&models.Ledger{}	)
+
+	// Insertions on all tables:
 	var test *models.Client
 	test = &models.Client{Balance: "101.2299",IsInvestor:true}
-
 	r = db.Create(test)
 	fmt.Println(test)
-
 	idInvestor := test.ID
 
 	var invoice *models.Invoice = &models.Invoice{ClientID:idInvestor,Amount:"100.22",State:models.InvoiceRejected}
@@ -66,9 +65,10 @@ func main () {
 	r = db.Create(ledger)
 	fmt.Println(ledger)
 
+	// retrieve of the ledger 2
 	ledger = &models.Ledger{}
-
 	r = db.First(ledger,2)
+	// update of the mentioned ledger:
 	ledger.Balance = "200"
 	r = db.Save(ledger)
 
