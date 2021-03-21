@@ -33,9 +33,16 @@ func main () {
 	file	:= string(fileToParse)
 
 	lines	:= strings.Split(file,"\n")
-
-	re1 := regexp.MustCompile(`(\s\s*)r\s*:?=`)				// one group to capture : the spaces
-	re2 := regexp.MustCompile(`(\s\s*)([A-Za-z]+_r)\s*:?=`)	// two groups to capture: the spaces and var name
+	// obj.Error code generation
+	// detection of the "r" assignament
+	re1 := regexp.MustCompile(`(\s\s*)r\s*=`)				// one group to capture : the spaces
+	// detection of variables ended "_r" assignament
+	re2 := regexp.MustCompile(`(\s\s*)([A-Za-z]+_r)\s*=`)	// two groups to capture: the spaces and var name
+	// generic error code generation
+	// detection of the "err" assignament
+	re3 := regexp.MustCompile(`(\s\s*)err\s*=`)				// one group to capture : the spaces
+	// detection of variables ended "_err" assignament
+	re4 := regexp.MustCompile(`(\s\s*)([A-Za-z]+_err)\s*=`)	// two groups to capture: the spaces and var name
 
 	for _,line := range lines {
 		fmt.Fprintln(out, line)
@@ -49,6 +56,17 @@ func main () {
 		res = re2.FindStringSubmatch(line)
 		if len(res) == 3 {
 			fmt.Fprintln(out, res[1] +"if "+ res[2] +".Error != nil { goto ErrorTrack_"+ res[2] +" }")
+			continue
+		}
+		res = re3.FindStringSubmatch(line)
+		if len(res) ==  2 {
+			fmt.Fprintln(out, res[1] + "if err != nil { goto ErrorTrack_err }")
+			continue
+		}
+
+		res = re4.FindStringSubmatch(line)
+		if len(res) == 3 {
+			fmt.Fprintln(out, res[1] +"if "+ res[2] +" != nil { goto ErrorTrack_"+ res[2] +" }")
 			continue
 		}
 	}
