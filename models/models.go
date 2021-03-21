@@ -60,6 +60,11 @@ type Invoice struct {
 	State				InvoiceState	`gorm:"type:invoice_state"`
 }
 
+func (i *Invoice) CastgRPC() *pb.Invoice {
+	return &pb.Invoice{ClientId:uint64(i.ClientID),Amount:i.Amount,State:string(i.State)}
+}
+
+
 type SellOrder struct {
 	gorm.Model
 	InvoiceID			uint

@@ -3,7 +3,7 @@ package main
 import (
 
 	"fmt"
-	"io/ioutil"
+//	"io/ioutil"
 	"num/db"
 	"num/models"
 	"gorm.io/gorm"
@@ -18,7 +18,7 @@ func main () {
 	db := db.Db
 
 	var err error
-	typesDomains, err := ioutil.ReadFile("./sql/types-domains.sql")
+//	typesDomains, err := ioutil.ReadFile("./sql/types-domains.sql")
     if err != nil {
         panic(err)
     }
@@ -36,7 +36,7 @@ func main () {
 		return
 	}
 
-	r = db.Exec  (string(typesDomains)	)
+//	r- = db.Exec  (string(typesDomains)	)
 
 	// migrations:
 	err = db.AutoMigrate(&models.Client{}	)

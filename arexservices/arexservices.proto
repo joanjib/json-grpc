@@ -9,7 +9,7 @@ message Empty {
 }
 
 message Id {
-	int64 				id					= 1;
+	uint64 				id					= 1;
 }
 
 message IsInvestor {
@@ -24,15 +24,14 @@ message Client {
 }
 	
 message Invoice {
-	string 				fiscal_identity 	= 1;
-	int64				client_id			= 2;
+	uint64				client_id			= 2;
 	string				amount				= 3; 	// string representation of a numeric value in postgresql
 	string 				creation_time		= 4;
 	string        		state				= 5;
 }
 
 message SellOrder {
-	int64 				invoice_id			= 1;
+	uint64 				invoice_id			= 1;
 	string				size				= 2;
 	string				amount 				= 3; 	// string representation of a numeric value in postgresql
 	string 				creation_time		= 4;
@@ -40,8 +39,8 @@ message SellOrder {
 }
 
 message Ledger	{
-	int64				investor_id			= 1;
-	int64				sell_order_id		= 2;
+	uint64				investor_id			= 1;
+	uint64				sell_order_id		= 2;
 	string				size				= 3; 	// string representation of a numeric value in postgresql
 	string				amount 				= 4; 	// string representation of a numeric value in postgresql
 	string				balance 			= 5; 	// string representation of a numeric value in postgresql
