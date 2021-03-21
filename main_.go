@@ -22,7 +22,6 @@ func main () {
     }
 
 	r := db.Exec  (string(typesDomains)	)
-	if r.Error != nil { goto ErrorTrack }
 
 	db.AutoMigrate(&models.Client{}		)
 	db.AutoMigrate(&models.Invoice{}	)
@@ -57,5 +56,4 @@ func main () {
 	db.Save(ledger)
 
 }
-
 
