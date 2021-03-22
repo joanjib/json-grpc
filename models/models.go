@@ -19,6 +19,9 @@ func (i *Client) CastgRPC() *pb.Client {
 	return &pb.Client{FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
 }
 
+func CastGorm(i *pb.Client) *Client {
+	return &Client{FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
+}
 
 // enum InvoiceState and SellOrder definition		-		begin
 type InvoiceState string
