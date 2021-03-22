@@ -34,9 +34,23 @@ func (s *server) AddClient(ctx context.Context, in *pb.Client) (*pb.Id, error) {
 	return  &pb.Id{Id:uint64(c.ID)},res.Error
 }
 
-//func (s *server) ListIssuers(in *pb.Empty,stream pb.ArexServices_ListIssuersServer) error {
-//	return issuer.ListIssuers(stream,s.db)
-//}
+func (s *server) RemoveClient(ctx context.Context, in *pb.Id) (*pb.Empty, error) {
+	id := uint(in.GetId())
+	res:= s.db.WithContext(ctx).Delete(&models.Client{},id)
+	return  &pb.Empty{},res.Error
+}
+func (s *server) ListClients(in *pb.IsInvestor,stream pb.ArexServices_ListClientsServer) error {
+	var toRet []models.Client
+	res:= s.db.Where("ID = ?", in.GetIsInvestor()).Find(&toRet)
+	if res.Error != nil {
+		return res.Error
+	}
+	for _,e:=range toRet {
+		stream.Send(e.CastgRPC())
+	}
+	return nil
+}
+
 func newServer() *server {
 	// BEGIN -  database instanciation
     if db.Db == nil  {
