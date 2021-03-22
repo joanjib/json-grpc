@@ -19,7 +19,7 @@ func (i *Client) CastgRPC() *pb.Client {
 	return &pb.Client{FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
 }
 
-func CastGorm(i *pb.Client) *Client {
+func CastClient(i *pb.Client) *Client {
 	return &Client{FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
 }
 
@@ -67,6 +67,9 @@ func (i *Invoice) CastgRPC() *pb.Invoice {
 	return &pb.Invoice{ClientId:uint64(i.ClientID),Amount:i.Amount,State:string(i.State)}
 }
 
+func  CastInvoice(i *pb.Invoice) *Invoice {
+	return &Invoice{ClientID:uint(i.ClientId),Amount:i.Amount,State:InvoiceState(i.State)}
+}
 
 type SellOrder struct {
 	gorm.Model
@@ -78,6 +81,13 @@ type SellOrder struct {
 	State				SellOrderState	`gorm:"type:sell_order_state"`
 }
 
+func (i *SellOrder) CastgRPC() *pb.SellOrder {
+	return &pb.SellOrder{InvoiceId:uint64(i.InvoiceID),Size:i.Size,Amount:i.Amount,State:string(i.State)}
+}
+
+func  CastSellOrder(i *pb.SellOrder) *SellOrder {
+	return &SellOrder{InvoiceID:uint(i.InvoiceId),Size:i.Size,Amount:i.Amount,State:SellOrderState(i.State)}
+}
 
 type Ledger struct {
 	gorm.Model
@@ -86,7 +96,22 @@ type Ledger struct {
 	Size				string			`gorm:"type:amount_type"`
 	Amount				string			`gorm:"type:amount_type"`
 	Balance				string			`gorm:"type:amount_type"`
-	discount			string			`gorm:"type:discount_type"`
-	expectedProfit		string			`gorm:"type:amount_type_calc"`
+	Discount			string			`gorm:"type:discount_type;default:0"`
+	ExpectedProfit		string			`gorm:"type:amount_type_calc;default:0"`
 	IsAdjusted			bool			`gorm:"default:false"`				// adjusted to feet the size of an invoice.
 }
+
+func (i *Ledger) CastgRPC() *pb.Ledger {
+	return &pb.Ledger{	InvestorId:uint64(i.InvestorID),SellOrderId:uint64(i.SellOrderID),
+						Size:i.Size,Amount:i.Amount,Balance:i.Balance,CreatedAt:i.CreatedAt.String(),
+						ExpectedProfit:i.ExpectedProfit,IsAdjusted:i.IsAdjusted	}
+}
+
+func  CastLedger(i *pb.Ledger) *Ledger {
+
+	return &Ledger{	InvestorID:uint(i.InvestorId),SellOrderID:uint(i.SellOrderId),
+						Size:i.Size,Amount:i.Amount,Balance:i.Balance,
+						ExpectedProfit:i.ExpectedProfit,IsAdjusted:i.IsAdjusted	}
+}
+
+
