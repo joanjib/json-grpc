@@ -25,8 +25,6 @@ type ArexServicesClient interface {
 	// SellOrder API & Invoices
 	// Starts an invoice financing process with a SellOrder + Invoice. Returns the id of the SellOrder.
 	StartInvoiceFinancing(ctx context.Context, in *InvoiceFinancing, opts ...grpc.CallOption) (*Id, error)
-	// for any reason the issuer wants to reverse the financing process, he uses this procedure
-	ReverseInvoiceFinancing(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
 	// allows listing of the SellOrders to Investors.
 	ListSellOrders(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListSellOrdersClient, error)
 	ListInvoices(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListInvoicesClient, error)
@@ -99,15 +97,6 @@ func (x *arexServicesListClientsClient) Recv() (*Client, error) {
 func (c *arexServicesClient) StartInvoiceFinancing(ctx context.Context, in *InvoiceFinancing, opts ...grpc.CallOption) (*Id, error) {
 	out := new(Id)
 	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/StartInvoiceFinancing", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *arexServicesClient) ReverseInvoiceFinancing(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/ReverseInvoiceFinancing", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -239,8 +228,6 @@ type ArexServicesServer interface {
 	// SellOrder API & Invoices
 	// Starts an invoice financing process with a SellOrder + Invoice. Returns the id of the SellOrder.
 	StartInvoiceFinancing(context.Context, *InvoiceFinancing) (*Id, error)
-	// for any reason the issuer wants to reverse the financing process, he uses this procedure
-	ReverseInvoiceFinancing(context.Context, *Id) (*Empty, error)
 	// allows listing of the SellOrders to Investors.
 	ListSellOrders(*Empty, ArexServices_ListSellOrdersServer) error
 	ListInvoices(*Empty, ArexServices_ListInvoicesServer) error
@@ -268,9 +255,6 @@ func (UnimplementedArexServicesServer) ListClients(*IsInvestor, ArexServices_Lis
 }
 func (UnimplementedArexServicesServer) StartInvoiceFinancing(context.Context, *InvoiceFinancing) (*Id, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartInvoiceFinancing not implemented")
-}
-func (UnimplementedArexServicesServer) ReverseInvoiceFinancing(context.Context, *Id) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReverseInvoiceFinancing not implemented")
 }
 func (UnimplementedArexServicesServer) ListSellOrders(*Empty, ArexServices_ListSellOrdersServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListSellOrders not implemented")
@@ -371,24 +355,6 @@ func _ArexServices_StartInvoiceFinancing_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ArexServicesServer).StartInvoiceFinancing(ctx, req.(*InvoiceFinancing))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _ArexServices_ReverseInvoiceFinancing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ArexServicesServer).ReverseInvoiceFinancing(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/arexservices.ArexServices/ReverseInvoiceFinancing",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArexServicesServer).ReverseInvoiceFinancing(ctx, req.(*Id))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -510,10 +476,6 @@ var ArexServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StartInvoiceFinancing",
 			Handler:    _ArexServices_StartInvoiceFinancing_Handler,
-		},
-		{
-			MethodName: "ReverseInvoiceFinancing",
-			Handler:    _ArexServices_ReverseInvoiceFinancing_Handler,
 		},
 		{
 			MethodName: "AddBid",

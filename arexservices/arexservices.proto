@@ -65,8 +65,6 @@ service ArexServices {
 	// SellOrder API & Invoices
 	// Starts an invoice financing process with a SellOrder + Invoice. Returns the id of the SellOrder.
 	rpc StartInvoiceFinancing (InvoiceFinancing) 	returns (Id)	{}
-	// for any reason the issuer wants to reverse the financing process, he uses this procedure
-	rpc ReverseInvoiceFinancing (Id) 				returns (Empty)	{}
 	// allows listing of the SellOrders to Investors.
 	rpc ListSellOrders	(Empty)			returns (stream SellOrder) 	{}
 	rpc ListInvoices	(Empty)			returns (stream Invoice) 	{}

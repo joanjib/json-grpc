@@ -51,6 +51,24 @@ func (s *server) ListClients(in *pb.IsInvestor,stream pb.ArexServices_ListClient
 	return nil
 }
 
+func (s *server) StartInvoiceFinancing(ctx context.Context, in *pb.InvoiceFinancing) (*pb.Id, error) {
+	invoice		:= models.CastInvoice	(in.GetInvoice()	)
+	sellOrder	:= models.CastSellOrder	(in.GetSellOrder()	)
+
+	e := s.db.Transaction(func(tx *gorm.DB) error {
+		var r *gorm.DB
+
+		ErrorTrack :		// handling of errors.
+		if r != nil { return r.Error }	// rolling back the transaction
+
+		r = tx.WithContext(ctx).Create(invoice	)
+		sellOrder.InvoiceID = invoice.ID
+		r = tx.WithContext(ctx).Create(sellOrder)
+
+		return nil
+	})
+	return  &pb.Id{Id:uint64(sellOrder.ID)},e
+}
 func newServer() *server {
 	// BEGIN -  database instanciation
     if db.Db == nil  {
