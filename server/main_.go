@@ -39,9 +39,10 @@ func (s *server) RemoveClient(ctx context.Context, in *pb.Id) (*pb.Empty, error)
 	res:= s.db.WithContext(ctx).Delete(&models.Client{},id)
 	return  &pb.Empty{},res.Error
 }
+
 func (s *server) ListClients(in *pb.IsInvestor,stream pb.ArexServices_ListClientsServer) error {
 	var toRet []models.Client
-	res:= s.db.Where("ID = ?", in.GetIsInvestor()).Find(&toRet)
+	res:= s.db.Where("is_investor = ?", in.GetIsInvestor()).Find(&toRet)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -69,6 +70,22 @@ func (s *server) StartInvoiceFinancing(ctx context.Context, in *pb.InvoiceFinanc
 	})
 	return  &pb.Id{Id:uint64(sellOrder.ID)},e
 }
+// macro expansiion : the function is exapanded as another function in the .go files
+//<<func (s *server) ListInvoices	(in *pb.Empty,stream pb.ArexServices_ListInvoicesServer ) error {>>
+func (s *server) ListSellOrders	(in *pb.Empty,stream pb.ArexServices_ListSellOrdersServer	) error {
+//<<var toRet []models.Invoice>>
+	var toRet []models.SellOrder
+	res:= s.db.Find(&toRet)
+	if res.Error != nil {
+		return res.Error
+	}
+	for _,e:=range toRet {
+		stream.Send(e.CastgRPC())
+	}
+	return nil
+}
+//<<end>>
+
 func newServer() *server {
 	// BEGIN -  database instanciation
     if db.Db == nil  {
