@@ -25,7 +25,7 @@ func main () {
 
 	// output file:
 	// I remove the _.go of the input name and I replace in the output file for .go
-	out, err := os.Create(argsWithoutProg[0][:len(argsWithoutProg[0])-4] + ".go")
+	out, err := os.Create(argsWithoutProg[0][:len(argsWithoutProg[0])-4] + "__.go")
     if err != nil { panic(err) }
 
 
