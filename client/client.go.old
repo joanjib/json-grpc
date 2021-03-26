@@ -1,0 +1,81 @@
+package main
+// issuer remote tests file
+import (
+	"io"
+	"testing"
+	"github.com/stretchr/testify/assert"
+
+	pb "num/arexservices"
+    "num/models"
+    "num/utils"
+    "gorm.io/gorm"
+)
+
+func TestCRUDClients (t *testing.T) {
+	conn,c,ctx,cancel := utils.InitClient()
+    defer conn.Close()
+    defer cancel()
+	// adding two clients - issuers - begin
+	r, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "1",Name: "Joan1",Surname:"Iglesias1",Balance:"1000",IsInvestor:false)
+	assert.Nil(t,err,"Error in addition of issuer")
+
+	id := r.GetId()		// saving the id of the new issuer
+
+	r, err =  c.AddIssuer(ctx, &pb.Issuer{FiscalIdentity: "2",Name: "Joan2",Surname:"Iglesias2",Balance:&pb.Money{Numeral:1000,Decimal:0}})
+	assert.Nil(t,err,"Error in addition of issuer")
+
+	// adding two issuers - end
+
+	// listing the two issuers
+	stream, err := c.ListIssuers(ctx,new(pb.Empty))
+	assert.Nil(t,err,"Error listint the two issuers inserted")
+
+	issuersList := []pb.Issuer{}
+
+	for {
+        issuer, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+		assert.Nil(t,err,"Error receiving  issuer")
+		issuersList = append(issuersList,*issuer)
+    }
+	assert.Equal(t,"1        "	,issuersList[0].GetFiscalIdentity(),	"Fiscal identity not equal to 1"	)
+	assert.Equal(t,"Joan1"		,issuersList[0].GetName(),				"Name not equal to Joan1"			)
+	assert.Equal(t,"Iglesias1"	,issuersList[0].GetSurname(),			"Surname not equal to Iglesias1"	)
+    assert.Equal(t,int32(0)     ,issuersList[0].GetBalance().GetNumeral(),    "Balance numeral is not 0"    )
+    assert.Equal(t,int32(0)     ,issuersList[0].GetBalance().GetDecimal(),    "Balance decimal is not 0"    )
+	assert.Equal(t,"2        "	,issuersList[1].GetFiscalIdentity(),	"Fiscal identity not equal to 2"	)
+	assert.Equal(t,"Joan2"		,issuersList[1].GetName(),				"Name not equal to Joan2"			)
+	assert.Equal(t,"Iglesias2"	,issuersList[1].GetSurname(),			"Surname not equal to Iglesias2"	)
+    assert.Equal(t,int32(1000)  ,issuersList[1].GetBalance().GetNumeral(),    "Balance numeral is not 1000" )
+    assert.Equal(t,int32(0)     ,issuersList[1].GetBalance().GetDecimal(),    "Balance decimal is not 0"    )
+
+
+	assert.Equal(t,2,len(issuersList),"List of issuers must be 2 in size")
+
+	// removing the first issuer
+	_, err = c.RemoveIssuer(ctx, &pb.Id{Id:id})
+	assert.Nil(t,err,"Error removing one of the two issuers")
+
+	// listing againg the issusers: must be only one
+	stream, err = c.ListIssuers(ctx,new(pb.Empty))
+	assert.Nil(t,err,"Error listint one issuer")
+	issuersList = []pb.Issuer{}
+
+	for {
+        issuer, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+		assert.Nil(t,err,"Error receiving  issuer in second call")
+		issuersList = append(issuersList,*issuer)
+    }
+	assert.Equal(t,"2        "	,issuersList[0].GetFiscalIdentity(),	"Fiscal identity not equal to 2")
+	assert.Equal(t,"Joan2"		,issuersList[0].GetName(),				"Name not equal to Joan2"		)
+	assert.Equal(t,"Iglesias2"	,issuersList[0].GetSurname(),			"Surname not equal to Iglesias2")
+    assert.Equal(t,int32(1000)  ,issuersList[0].GetBalance().GetNumeral(),    "Balance numeral is not 1000" )
+    assert.Equal(t,int32(0)     ,issuersList[0].GetBalance().GetDecimal(),    "Balance decimal is not 0"    )
+
+	assert.Equal(t,1,len(issuersList),"List of issuers must be 1 in size")
+}
