@@ -76,6 +76,7 @@ type SellOrder struct {
 	InvoiceID			uint
 	Size				string			`gorm:"type:amount_type"`
 	Amount				string			`gorm:"type:amount_type"`
+	Discount			string			`gorm:"type:discount_type;default:0"`
 	FinanSize			string			`gorm:"type:amount_type_calc;default:0"`
 	FinanAmount			string			`gorm:"type:amount_type_calc;default:0"`
 	State				SellOrderState	`gorm:"type:sell_order_state"`

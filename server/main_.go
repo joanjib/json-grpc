@@ -70,7 +70,7 @@ func (s *server) StartInvoiceFinancing(ctx context.Context, in *pb.InvoiceFinanc
 	})
 	return  &pb.Id{Id:uint64(sellOrder.ID)},e
 }
-// macro expansiion : the function is exapanded as another function in the .go files
+// macro expansion : the function is exapanded as another function in the .go files
 //<<func (s *server) ListInvoices	(in *pb.Empty,stream pb.ArexServices_ListInvoicesServer ) error {>>
 func (s *server) ListSellOrders	(in *pb.Empty,stream pb.ArexServices_ListSellOrdersServer	) error {
 //<<var toRet []models.Invoice>>
@@ -85,6 +85,22 @@ func (s *server) ListSellOrders	(in *pb.Empty,stream pb.ArexServices_ListSellOrd
 	return nil
 }
 //<<end>>
+
+type ID struct {
+	ID		uint
+}
+func (s *server) AddBid(ctx context.Context, in *pb.Ledger) (*pb.Id, error) {
+	var r ID
+	l := models.CastLedger(in)
+	res := s.db.Raw("select add_bid(?,?,?,?)",l.InvestorID,l.SellOrderID,l.Size,l.Amount).Scan(&r)
+
+	if res.Error != nil {
+		return nil,res.Error
+	}
+
+	return  &pb.Id{Id:uint64(r.ID)},nil
+}
+
 
 func newServer() *server {
 	// BEGIN -  database instanciation
