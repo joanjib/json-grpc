@@ -16,7 +16,7 @@ type Client struct {
 }
 
 func (i *Client) CastgRPC() *pb.Client {
-	return &pb.Client{FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
+	return &pb.Client{Id:uint64(i.ID),FiscalIdentity:i.FiscalIdentity,Name:i.Name,Surname:i.Surname,Balance:i.Balance,IsInvestor:i.IsInvestor}
 }
 
 func CastClient(i *pb.Client) *Client {
@@ -64,7 +64,7 @@ type Invoice struct {
 }
 
 func (i *Invoice) CastgRPC() *pb.Invoice {
-	return &pb.Invoice{ClientId:uint64(i.ClientID),Amount:i.Amount,State:string(i.State)}
+	return &pb.Invoice{Id:uint64(i.ID),ClientId:uint64(i.ClientID),Amount:i.Amount,State:string(i.State)}
 }
 
 func  CastInvoice(i *pb.Invoice) *Invoice {
@@ -83,7 +83,7 @@ type SellOrder struct {
 }
 
 func (i *SellOrder) CastgRPC() *pb.SellOrder {
-	return &pb.SellOrder{InvoiceId:uint64(i.InvoiceID),Size:i.Size,Amount:i.Amount,State:string(i.State)}
+	return &pb.SellOrder{Id:uint64(i.ID),InvoiceId:uint64(i.InvoiceID),Size:i.Size,Amount:i.Amount,State:string(i.State)}
 }
 
 func  CastSellOrder(i *pb.SellOrder) *SellOrder {
@@ -103,7 +103,7 @@ type Ledger struct {
 }
 
 func (i *Ledger) CastgRPC() *pb.Ledger {
-	return &pb.Ledger{	InvestorId:uint64(i.InvestorID),SellOrderId:uint64(i.SellOrderID),
+	return &pb.Ledger{	Id:uint64(i.ID),InvestorId:uint64(i.InvestorID),SellOrderId:uint64(i.SellOrderID),
 						Size:i.Size,Amount:i.Amount,Balance:i.Balance,CreatedAt:i.CreatedAt.String(),
 						ExpectedProfit:i.ExpectedProfit,IsAdjusted:i.IsAdjusted	}
 }
