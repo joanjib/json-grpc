@@ -48,7 +48,7 @@ begin
 	-- updating the investor balance
 	update 	clients
 	set 	balance = balance - investor_amount
-	where 	investors.id = investor_id
+	where 	clients.id = investor_id
 	returning balance into temp_balance;
 
 	-- updating the sell order financing fields
