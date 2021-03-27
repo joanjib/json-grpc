@@ -16,14 +16,16 @@ message IsInvestor {
 	bool 				is_investor			= 1;
 }
 message Client {
-	string 				fiscal_identity 	= 1;
-	string 				name				= 2;
-	string 				surname				= 3;
-	string 				balance				= 4; 	// string representation of a numeric value in postgresql
-	bool				is_investor			= 5;
+	uint64 				id					= 1;
+	string 				fiscal_identity 	= 2;
+	string 				name				= 3;
+	string 				surname				= 4;
+	string 				balance				= 5; 	// string representation of a numeric value in postgresql
+	bool				is_investor			= 6;
 }
 	
 message Invoice {
+	uint64 				id					= 1;
 	uint64				client_id			= 2;
 	string				amount				= 3; 	// string representation of a numeric value in postgresql
 	string 				creation_time		= 4;
@@ -31,23 +33,25 @@ message Invoice {
 }
 
 message SellOrder {
-	uint64 				invoice_id			= 1;
-	string				size				= 2;
-	string				amount 				= 3; 	// string representation of a numeric value in postgresql
-	string 				creation_time		= 4;
-	string		 		state				= 5;
+	uint64 				id					= 1;
+	uint64 				invoice_id			= 2;
+	string				size				= 3;
+	string				amount 				= 4; 	// string representation of a numeric value in postgresql
+	string 				creation_time		= 5;
+	string		 		state				= 6;
 }
 
 message Ledger	{
-	uint64				investor_id			= 1;
-	uint64				sell_order_id		= 2;
-	string				size				= 3; 	// string representation of a numeric value in postgresql
-	string				amount 				= 4; 	// string representation of a numeric value in postgresql
-	string				balance 			= 5; 	// string representation of a numeric value in postgresql
-	string				discount			= 6; 	// string representation of a percentage (ex "44.55")
-	string 				created_at			= 7;
-	string				expected_profit		= 8;
-	bool				is_adjusted			= 9;	// true: means: it's not the original big, it was adjusted. False otherwise
+	uint64 				id					= 1;
+	uint64				investor_id			= 2;
+	uint64				sell_order_id		= 3;
+	string				size				= 4; 	// string representation of a numeric value in postgresql
+	string				amount 				= 5; 	// string representation of a numeric value in postgresql
+	string				balance 			= 6; 	// string representation of a numeric value in postgresql
+	string				discount			= 7; 	// string representation of a percentage (ex "44.55")
+	string 				created_at			= 8;
+	string				expected_profit		= 9;
+	bool				is_adjusted			= 10;	// true: means: it's not the original big, it was adjusted. False otherwise
 }
 
 message InvoiceFinancing {
