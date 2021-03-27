@@ -104,6 +104,7 @@ func TestCRUDClients (t *testing.T) {
     assert.Nil(t,err,"Error starting the financing process")
 
 	streamInv,err := c.ListInvoices(ctx,&pb.Empty{})
+    assert.Nil(t,err)
 	invoicesList := generateListInvoices(t,streamInv )
 
 	assert.Equal(t,1					,len(invoicesList)				)
@@ -112,6 +113,7 @@ func TestCRUDClients (t *testing.T) {
     assert.Equal(t,"financing search"	,invoicesList[0].GetState()		)
 
 	streamSO,err := c.ListSellOrders(ctx,&pb.Empty{})
+    assert.Nil(t,err)
 	soList := generateListSellOrders(t,streamSO )
 
 	assert.Equal(t,1						,len(soList)				)
