@@ -100,7 +100,7 @@ func TestCRUDClients (t *testing.T) {
 	sellOrder			:= &pb.SellOrder{Size:"250",Amount:"200"}
 	invoiceFinancing	:= &pb.InvoiceFinancing{SellOrder:sellOrder,Invoice:invoice}
 
-	_,err = c.StartInvoiceFinancing(ctx,invoiceFinancing)
+	soId,err := c.StartInvoiceFinancing(ctx,invoiceFinancing)			// storing the so id for using it at the add bit test
     assert.Nil(t,err,"Error starting the financing process")
 
 	streamInv,err := c.ListInvoices(ctx,&pb.Empty{})
@@ -121,6 +121,22 @@ func TestCRUDClients (t *testing.T) {
     assert.Equal(t,"250.00"					,soList[0].GetSize()		)
     assert.Equal(t,"200.00"					,soList[0].GetAmount()		)
     assert.Equal(t,"ongoing"				,soList[0].GetState()		)
+
+	// adding 3 investors for the add bid tests:
+	// investor
+	i1, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "i1",Name: "J2",Surname:"I2",Balance:"2000",IsInvestor:true})
+	assert.Nil(t,err)
+//	i2, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "i2",Name: "J2",Surname:"I2",Balance:"200",IsInvestor:true})
+//	assert.Nil(t,err)
+//	i3, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "i3",Name: "J2",Surname:"I2",Balance:"4000",IsInvestor:true})
+//	assert.Nil(t,err)
+
+	// we has the soId too
+
+	_,err = c.AddBid(ctx,&pb.Ledger{InvestorId:i1.GetId(),SellOrderId:soId.GetId(),Size:"50",Amount:"40"})
+	assert.Nil(t,err)
+
+
 }
 
 
