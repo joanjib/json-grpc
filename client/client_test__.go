@@ -117,7 +117,7 @@ func TestCRUDClients (t *testing.T) {
 	soList := generateListSellOrders(t,streamSO )
 
 	assert.Equal(t,1						,len(soList)				)
-//TODO    assert.Equal(t,invoicesList[0].GetId()	,soList[0].GetInvoiceId()	)
+    assert.Equal(t,invoicesList[0].GetId()	,soList[0].GetInvoiceId()	)
     assert.Equal(t,"250.00"					,soList[0].GetSize()		)
     assert.Equal(t,"200.00"					,soList[0].GetAmount()		)
     assert.Equal(t,"ongoing"				,soList[0].GetState()		)
