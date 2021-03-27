@@ -60,7 +60,7 @@ type Invoice struct {
 	gorm.Model
 	ClientID			uint
 	Amount				string			`gorm:"type:amount_type"`
-	State				InvoiceState	`gorm:"type:invoice_state"`
+	State				InvoiceState	`gorm:"type:invoice_state;default:'financing search'"`
 }
 
 func (i *Invoice) CastgRPC() *pb.Invoice {
@@ -76,10 +76,10 @@ type SellOrder struct {
 	InvoiceID			uint
 	Size				string			`gorm:"type:amount_type"`
 	Amount				string			`gorm:"type:amount_type"`
-	Discount			string			`gorm:"type:discount_type;default:0"`
+	Discount			string			`gorm:"->;type:discount_type generated always as (100 - (amount/size)*100) stored"`
 	FinanSize			string			`gorm:"type:amount_type_calc;default:0"`
 	FinanAmount			string			`gorm:"type:amount_type_calc;default:0"`
-	State				SellOrderState	`gorm:"type:sell_order_state"`
+	State				SellOrderState	`gorm:"type:sell_order_state;default:'ongoing'"`
 }
 
 func (i *SellOrder) CastgRPC() *pb.SellOrder {
@@ -97,8 +97,8 @@ type Ledger struct {
 	Size				string			`gorm:"type:amount_type"`
 	Amount				string			`gorm:"type:amount_type"`
 	Balance				string			`gorm:"type:amount_type"`
-	Discount			string			`gorm:"type:discount_type;default:0"`
-	ExpectedProfit		string			`gorm:"type:amount_type_calc;default:0"`
+	Discount			string			`gorm:"->;type:discount_type generated always as (100 - (amount/size)*100) stored"`
+	ExpectedProfit		string			`gorm:"->;type:amount_type_calc generated always as (size - amount) stored"`
 	IsAdjusted			bool			`gorm:"default:false"`				// adjusted to feet the size of an invoice.
 }
 

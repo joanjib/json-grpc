@@ -2,6 +2,7 @@ package main
 // issuer remote tests file
 import (
 	"io"
+	"fmt"
 	"testing"
 	"github.com/stretchr/testify/assert"
 
@@ -14,13 +15,13 @@ func TestCRUDClients (t *testing.T) {
     defer conn.Close()
     defer cancel()
 	// client
-	id, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "1",Name: "J1",Surname:"I1",Balance:"1000",IsInvestor:false})
+	idToRm, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "1",Name: "J1",Surname:"I1",Balance:"1000",IsInvestor:false})
 	assert.Nil(t,err,"Error in addition of issuer")
 
     //id := r.GetId()     // saving the id of the new issuer    
 
 	// client
-	_, err = c.AddClient(ctx, &pb.Client{FiscalIdentity: "2",Name: "J2",Surname:"I2",Balance:"2000",IsInvestor:false})
+	id, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "2",Name: "J2",Surname:"I2",Balance:"2000",IsInvestor:false})
 	assert.Nil(t,err,"Error in addition of issuer")
 
 	// investor
@@ -76,7 +77,7 @@ func TestCRUDClients (t *testing.T) {
     assert.Equal(t,true		    ,investorsList[0].GetIsInvestor(),		"Is investor is not true "			)
 
 	// removing the first client
-	_, err = c.RemoveClient(ctx, id)
+	_, err = c.RemoveClient(ctx, idToRm)
 	assert.Nil(t,err,"Error in addition of issuer")
 
 	stream, err = c.ListClients(ctx,&pb.IsInvestor{IsInvestor:false})
@@ -98,6 +99,18 @@ func TestCRUDClients (t *testing.T) {
     assert.Equal(t,"I2"			,issuersList[0].GetSurname(),           "Surname not equal to I2"			)
     assert.Equal(t,"2000.00"    ,issuersList[0].GetBalance(),			"Balance numeral is not 1000"		)
     assert.Equal(t,false	    ,issuersList[0].GetIsInvestor(),		"Is investor is not false"			)
+
+	//Invoice financing process testing:
+
+	// invoice to be financed of 250 €.
+	invoice				:= &pb.Invoice{ClientId:id.Id,Amount:"250"}
+	sellOrder			:= &pb.SellOrder{Size:"250",Amount:"200"}
+	invoiceFinancing	:= &pb.InvoiceFinancing{SellOrder:sellOrder,Invoice:invoice}
+
+	id,err = c.StartInvoiceFinancing(ctx,invoiceFinancing)
+    assert.Nil(t,err,"Error starting the financing process")
+	fmt.Println(id)
+
 
 
 }
