@@ -2,13 +2,33 @@ package main
 // issuer remote tests file
 import (
 	"io"
-	"fmt"
 	"testing"
 	"github.com/stretchr/testify/assert"
 
 	pb "num/arexservices"
     "num/utils"
 )
+
+// macro expansions:
+//<<func generateListSellOrders	(t *testing.T,stream pb.ArexServices_ListSellOrdersClient	) []pb.SellOrder{>>
+//<<func generateListInvoices 	(t *testing.T,stream pb.ArexServices_ListInvoicesClient		) []pb.Invoice	{>>
+func	 generateListClients	(t *testing.T,stream pb.ArexServices_ListClientsClient		) []pb.Client	{
+
+//<<var list []pb.SellOrder>>
+//<<var list []pb.Invoice>>
+	var list []pb.Client
+
+    for {
+        e, err := stream.Recv()
+        if err == io.EOF {
+            break
+        }
+        assert.Nil(t,err,"Error receiving  issuer")
+        list = append(list,*e)
+    }
+	return list
+}
+//<<end>>
 
 func TestCRUDClients (t *testing.T) {
 	conn,c,ctx,cancel := utils.InitClient()
@@ -33,17 +53,7 @@ func TestCRUDClients (t *testing.T) {
 	stream, err := c.ListClients(ctx,&pb.IsInvestor{IsInvestor:false})
     assert.Nil(t,err,"Error listint the two issuers inserted")
 
-    issuersList := []pb.Client{}
-
-    for {
-        issuer, err := stream.Recv()
-        if err == io.EOF {
-            break
-        }
-        assert.Nil(t,err,"Error receiving  issuer")
-        issuersList = append(issuersList,*issuer)
-    }
-
+	issuersList := generateListClients(t,stream)
 
     assert.Equal(t,"1"			,issuersList[0].GetFiscalIdentity(),    "Fiscal identity not equal to 1"    )
     assert.Equal(t,"J1"			,issuersList[0].GetName(),              "Name not equal to Joan1"           )
@@ -60,16 +70,8 @@ func TestCRUDClients (t *testing.T) {
 	stream, err = c.ListClients(ctx,&pb.IsInvestor{IsInvestor:true})
     assert.Nil(t,err,"Error listint the two issuers inserted")
 
-	investorsList := []pb.Client{}
+	investorsList := generateListClients(t,stream)
 
-    for {
-        investor, err := stream.Recv()
-        if err == io.EOF {
-            break
-        }
-        assert.Nil(t,err,"Error receiving  investor")
-        investorsList = append(investorsList,*investor)
-    }
 	assert.Equal(t,"2"			,investorsList[0].GetFiscalIdentity(),    "Fiscal identity not equal to 2"  )
     assert.Equal(t,"J2"			,investorsList[0].GetName(),              "Name not equal to J1"		    )
     assert.Equal(t,"I2"			,investorsList[0].GetSurname(),           "Surname not equal to I2"			)
@@ -83,16 +85,7 @@ func TestCRUDClients (t *testing.T) {
 	stream, err = c.ListClients(ctx,&pb.IsInvestor{IsInvestor:false})
     assert.Nil(t,err,"Error listint the issuer")
 
-    issuersList = []pb.Client{}
-
-    for {
-        issuer, err := stream.Recv()
-        if err == io.EOF {
-            break
-        }
-        assert.Nil(t,err,"Error receiving  issuer")
-        issuersList = append(issuersList,*issuer)
-    }
+	issuersList = generateListClients(t,stream )
 
     assert.Equal(t,"2"			,issuersList[0].GetFiscalIdentity(),    "Fiscal identity not equal to 2"    )
     assert.Equal(t,"J2"			,issuersList[0].GetName(),              "Name not equal to J2"		        )
@@ -107,12 +100,25 @@ func TestCRUDClients (t *testing.T) {
 	sellOrder			:= &pb.SellOrder{Size:"250",Amount:"200"}
 	invoiceFinancing	:= &pb.InvoiceFinancing{SellOrder:sellOrder,Invoice:invoice}
 
-	id,err = c.StartInvoiceFinancing(ctx,invoiceFinancing)
+	_,err = c.StartInvoiceFinancing(ctx,invoiceFinancing)
     assert.Nil(t,err,"Error starting the financing process")
-	fmt.Println(id)
 
+	streamInv,err := c.ListInvoices(ctx,&pb.Empty{})
+	invoicesList := generateListInvoices(t,streamInv )
 
+	assert.Equal(t,1					,len(invoicesList)				)
+	assert.Equal(t,id.GetId()			,invoicesList[0].GetClientId()	)
+    assert.Equal(t,"250.00"				,invoicesList[0].GetAmount()	)
+    assert.Equal(t,"financing search"	,invoicesList[0].GetState()		)
 
+	streamSO,err := c.ListSellOrders(ctx,&pb.Empty{})
+	soList := generateListSellOrders(t,streamSO )
+
+	assert.Equal(t,1						,len(soList)				)
+//TODO    assert.Equal(t,invoicesList[0].GetId()	,soList[0].GetInvoiceId()	)
+    assert.Equal(t,"250.00"					,soList[0].GetSize()		)
+    assert.Equal(t,"200.00"					,soList[0].GetAmount()		)
+    assert.Equal(t,"ongoing"				,soList[0].GetState()		)
 }
 
 

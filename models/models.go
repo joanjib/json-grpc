@@ -38,7 +38,7 @@ const (
 	SellOrderCommitted		SellOrderState = "committed"
 )
 func (p *InvoiceState) Scan(value interface{}) error {
-	*p = InvoiceState(value.([]byte))
+	*p = InvoiceState(value.(string))
 	return nil
 }
 
@@ -47,7 +47,7 @@ func (p InvoiceState) Value() (driver.Value, error) {
 }
 
 func (p *SellOrderState) Scan(value interface{}) error {
-	*p = SellOrderState(value.([]byte))
+	*p = SellOrderState(value.(string))
 	return nil
 }
 
