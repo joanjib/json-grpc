@@ -117,11 +117,11 @@ func newServer() *server {
 	var typesDomains []byte
 	var add_bid []byte
 	if initTypes {
-		typesDomains,err = ioutil.ReadFile("../sql/types-domains.sql")
+		typesDomains,err = ioutil.ReadFile("./sql/types-domains.sql")
 		if err != nil {
 			panic(err)
 		}
-		add_bid,err = ioutil.ReadFile("../sql/add_bid.sql")
+		add_bid,err = ioutil.ReadFile("./sql/add_bid.sql")
 		if err != nil {
 			panic(err)
 		}
