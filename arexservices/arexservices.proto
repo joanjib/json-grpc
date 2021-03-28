@@ -37,8 +37,10 @@ message SellOrder {
 	uint64 				invoice_id			= 2;
 	string				size				= 3;
 	string				amount 				= 4; 	// string representation of a numeric value in postgresql
-	string 				creation_time		= 5;
-	string		 		state				= 6;
+	string				finan_size			= 5;
+	string				finan_amount 		= 6; 	// string representation of a numeric value in postgresql
+	string 				creation_time		= 7;
+	string		 		state				= 8;
 }
 
 message Ledger	{

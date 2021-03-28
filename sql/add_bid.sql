@@ -73,7 +73,7 @@ begin
 	then
 		-- updating the balance of the issuer
 		update clients
-		set balance = (select sum(ledger.investor_amount) from ledgers where ledgers.sell_order_id = so_id and is_adjusted = false)
+		set balance = balance + (select sum(ledgers.amount) from ledgers where ledgers.sell_order_id = so_id and ledgers.is_adjusted = false)
 		where clients.id = (select id 
 							from   clients
 							where  clients.id = (	select 	client_id 

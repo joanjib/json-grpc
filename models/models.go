@@ -83,7 +83,8 @@ type SellOrder struct {
 }
 
 func (i *SellOrder) CastgRPC() *pb.SellOrder {
-	return &pb.SellOrder{Id:uint64(i.ID),InvoiceId:uint64(i.InvoiceID),Size:i.Size,Amount:i.Amount,State:string(i.State)}
+	return &pb.SellOrder{Id:uint64(i.ID),InvoiceId:uint64(i.InvoiceID),Size:i.Size,Amount:i.Amount,
+						 FinanSize:i.FinanSize,FinanAmount:i.FinanAmount,State:string(i.State)}
 }
 
 func  CastSellOrder(i *pb.SellOrder) *SellOrder {
