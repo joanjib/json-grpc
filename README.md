@@ -9,7 +9,7 @@ Made with:
 - Compilation directives in Makefiles
 - Docker compose file in the root directory
 
-The following project is animprovement of the arex repository APP.
+The following project is an improvement of the arex repository APP.
 
 The main two improvements are made into the "utilities" directory. 
 - error_track: this utility tries to bring a kind of Exceptions to the Golang (check server/main_.go)
