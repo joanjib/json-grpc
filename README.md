@@ -1,13 +1,34 @@
-This document tries to describe the work done, and the directory structure.
+Made with:
 
-- Done in Debian Buster system
+- Done in Debian Buster
 - Unit testing lib: Testify
 - For browsing the API from a web browser: grpcox
-- Editor : vim
+- Editor: vim
+- ORM: gorm
+- Database: Postgresql
 - Compilation directives in Makefiles
+- Docker compose file in the root directory
 
+The following project is an improvement of the arex repository APP.
+
+The main two improvements are made into the "utilities" directory. 
+- error_track: this utility tries to bring a kind of Exceptions to the Golang (check server/main_.go)
+- macro_expansion: sometimes macros are very useful specially when your are dealing with generated code (gRPC). Thanks to this utility it's reduced the amount of code necessary to implement repetitive APIs
 
 Directory structure:
+
+- server: contains the main.go file needed to start the server.
+- utils: contains an utility to connect a client to the server using gRPC.
+- models: single go file with all models and cast functions to cast instances of gorm to instances of gRPC and viceversa.
+- sql: all sql scrips. The main ones are:
+  - add_bid.sql: processes a bid
+  - types-domains.sql: basic sql types and domains used in the app
+- arexservices: the definition in .proto file and the generated .go files. Contains an script to generate the go files from the .proto file.
+- client: single file with all test to the server made from the client side (gRPC)
+- db: configuration and creation of the gorm db object.
+ 
+ 
+File nomenclature:
 
 
 
