@@ -21,11 +21,17 @@ declare
 	bid_discount	discount_type	= (100 - (investor_amount/investor_size)*100);
 	is_adjusted		boolean			= false;
 begin
+
 	-- sell order basic information retrive
 	select 	sell_orders.id	,state		,size 			,amount			,discount		,finan_size		,finan_amount
 	into	so_id			,so_state	,so_size		,so_amount		,so_discount	,so_fin_size	,so_fin_amount
 	from 	sell_orders 
 	where 	sell_orders.id  = sell_order_id;
+	
+	if (so_state != 'ongoing')
+	then
+		raise exception 'sell order state is not ongoing, is %',so_state;
+	end if;
 
 	-- discount control
 	if 	(bid_discount < so_discount						)		-- not an acceptable discount
