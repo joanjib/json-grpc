@@ -1,0 +1,26 @@
+version: "3"
+services:
+    app:
+        image: golang:1.16.2
+        ports:
+            - "50051:50051"
+        volumes:
+            - .:/go/arex
+        working_dir: /go/arex
+        command: go run ./server/main.go
+        depends_on: 
+            - db
+    webclient:
+        image: gusaul/grpcox:latest
+        ports:
+            - "6969:6969"
+    db:
+        image: postgres:13.2
+        environment:
+            - POSTGRES_USER=joan
+            - POSTGRES_PASSWORD=joan123
+            - POSTGRES_DB=num
+        restart: always
+        volumes:
+            - .:/go/arex
+            - ./pgsql-data:/var/lib/postgresql/data/

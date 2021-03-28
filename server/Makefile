@@ -1,5 +1,3 @@
-main 		: main.go
-	go run main.go
 main.go 	: main__.go
 	macro_expansion $<
 main__.go 	: main_.go

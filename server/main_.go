@@ -115,8 +115,13 @@ func newServer() *server {
 	// BEGIN - database objects initialization
     var err error
 	var typesDomains []byte
+	var add_bid []byte
 	if initTypes {
 		typesDomains,err = ioutil.ReadFile("../sql/types-domains.sql")
+		if err != nil {
+			panic(err)
+		}
+		add_bid,err = ioutil.ReadFile("../sql/add_bid.sql")
 		if err != nil {
 			panic(err)
 		}
@@ -135,6 +140,7 @@ func newServer() *server {
 
 	if initTypes {
 		r = db.Exec  (string(typesDomains) )
+		r = db.Exec  (string(add_bid	 ) )
 	}
     // migrations:
     err = db.AutoMigrate(&models.Client{}   )
