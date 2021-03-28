@@ -156,13 +156,12 @@ func newServer() *server {
 
 
 func main () {
-	argsWithoutProg := os.Args[1:]
 
 
-	switch len(argsWithoutProg) {
-	case 1	: initTypes = true
-	case 0  : initTypes = false
-	default : panic("Too much arguments when init the server")
+	if _, er := os.Stat("./new"); er == nil {
+		initTypes = true
+	} else {
+		initTypes = false
 	}
 
     lis, err := net.Listen("tcp", port)
