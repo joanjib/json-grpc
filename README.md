@@ -1,6 +1,6 @@
 Made with:
 
-- Done in Debian Buster
+- Debian Buster
 - Unit testing lib: Testify
 - For browsing the API from a web browser: grpcox
 - Editor: vim
