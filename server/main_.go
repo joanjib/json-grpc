@@ -71,8 +71,10 @@ func (s *server) StartInvoiceFinancing(ctx context.Context, in *pb.InvoiceFinanc
 	return  &pb.Id{Id:uint64(sellOrder.ID)},e
 }
 // macro expansion : the function is exapanded as another function in the .go files
+//<<func (s *server) ListBids		(in *pb.Empty,stream pb.ArexServices_ListBidsServer ) error {>>
 //<<func (s *server) ListInvoices	(in *pb.Empty,stream pb.ArexServices_ListInvoicesServer ) error {>>
 func (s *server) ListSellOrders	(in *pb.Empty,stream pb.ArexServices_ListSellOrdersServer	) error {
+//<<var toRet []models.Ledger>>
 //<<var toRet []models.Invoice>>
 	var toRet []models.SellOrder
 	res:= s.db.Find(&toRet)

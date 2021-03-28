@@ -105,13 +105,13 @@ type Ledger struct {
 func (i *Ledger) CastgRPC() *pb.Ledger {
 	return &pb.Ledger{	Id:uint64(i.ID),InvestorId:uint64(i.InvestorID),SellOrderId:uint64(i.SellOrderID),
 						Size:i.Size,Amount:i.Amount,Balance:i.Balance,CreatedAt:i.CreatedAt.String(),
-						ExpectedProfit:i.ExpectedProfit,IsAdjusted:i.IsAdjusted	}
+						Discount:i.Discount,ExpectedProfit:i.ExpectedProfit,IsAdjusted:i.IsAdjusted	}
 }
 
 func  CastLedger(i *pb.Ledger) *Ledger {
 
-	return &Ledger{	InvestorID:uint(i.InvestorId),SellOrderID:uint(i.SellOrderId),
-						Size:i.Size,Amount:i.Amount,Balance:i.Balance,
+	return &Ledger{		InvestorID:uint(i.InvestorId),SellOrderID:uint(i.SellOrderId),
+						Size:i.Size,Amount:i.Amount,Balance:i.Balance,Discount:i.Discount,
 						ExpectedProfit:i.ExpectedProfit,IsAdjusted:i.IsAdjusted	}
 }
 

@@ -10,10 +10,12 @@ import (
 )
 
 // macro expansions:
+//<<func generateListBids		(t *testing.T,stream pb.ArexServices_ListBidsClient			) []pb.Ledger	{>>
 //<<func generateListSellOrders	(t *testing.T,stream pb.ArexServices_ListSellOrdersClient	) []pb.SellOrder{>>
 //<<func generateListInvoices 	(t *testing.T,stream pb.ArexServices_ListInvoicesClient		) []pb.Invoice	{>>
 func	 generateListClients	(t *testing.T,stream pb.ArexServices_ListClientsClient		) []pb.Client	{
 
+//<<var list []pb.Ledger>>
 //<<var list []pb.SellOrder>>
 //<<var list []pb.Invoice>>
 	var list []pb.Client
@@ -124,7 +126,7 @@ func TestCRUDClients (t *testing.T) {
 
 	// adding 3 investors for the add bid tests:
 	// investor
-	i1, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "i1",Name: "J2",Surname:"I2",Balance:"2000",IsInvestor:true})
+	i1, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "111",Name: "J2",Surname:"I2",Balance:"2000",IsInvestor:true})
 	assert.Nil(t,err)
 //	i2, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "i2",Name: "J2",Surname:"I2",Balance:"200",IsInvestor:true})
 //	assert.Nil(t,err)
@@ -136,6 +138,27 @@ func TestCRUDClients (t *testing.T) {
 	_,err = c.AddBid(ctx,&pb.Ledger{InvestorId:i1.GetId(),SellOrderId:soId.GetId(),Size:"50",Amount:"40"})
 	assert.Nil(t,err)
 
+	stream, err = c.ListClients(ctx,&pb.IsInvestor{IsInvestor:true})
+    assert.Nil(t,err)
+
+	investorsList = generateListClients(t,stream)
+	assert.Equal(t,"111"			,investorsList[1].GetFiscalIdentity()	)
+    assert.Equal(t,"1960.00"	    ,investorsList[1].GetBalance()			)
+    assert.Equal(t,true			    ,investorsList[1].GetIsInvestor()		)
+
+	streamBids,err := c.ListBids(ctx,&pb.Empty{})
+    assert.Nil(t,err)
+	bidsList := generateListBids(t,streamBids )
+
+	assert.Equal(t,1						,len(soList)					)
+    assert.Equal(t,i1.GetId()				,bidsList[0].GetInvestorId()	)
+    assert.Equal(t,soId.GetId()				,bidsList[0].GetSellOrderId()	)
+    assert.Equal(t,"50.00"					,bidsList[0].GetSize()			)
+    assert.Equal(t,"40.00"					,bidsList[0].GetAmount()		)
+    assert.Equal(t,"1960.00"				,bidsList[0].GetBalance()		)
+    assert.Equal(t,"20.00"					,bidsList[0].GetDiscount()		)
+    assert.Equal(t,"10.00"					,bidsList[0].GetExpectedProfit())
+    assert.Equal(t,false					,bidsList[0].GetIsAdjusted()	)
 
 }
 
