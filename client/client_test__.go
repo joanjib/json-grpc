@@ -2,6 +2,7 @@ package main
 // issuer remote tests file
 import (
 	"io"
+	"fmt"
 	"testing"
 	"github.com/stretchr/testify/assert"
 
@@ -128,8 +129,8 @@ func TestCRUDClients (t *testing.T) {
 	// investor
 	i1, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "111",Name: "J2",Surname:"I2",Balance:"2000",IsInvestor:true})
 	assert.Nil(t,err)
-//	i2, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "i2",Name: "J2",Surname:"I2",Balance:"200",IsInvestor:true})
-//	assert.Nil(t,err)
+	i2, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "222",Name: "J2",Surname:"I2",Balance:"20",IsInvestor:true})
+	assert.Nil(t,err)
 //	i3, err := c.AddClient(ctx, &pb.Client{FiscalIdentity: "i3",Name: "J2",Surname:"I2",Balance:"4000",IsInvestor:true})
 //	assert.Nil(t,err)
 
@@ -160,6 +161,33 @@ func TestCRUDClients (t *testing.T) {
     assert.Equal(t,"10.00"					,bidsList[0].GetExpectedProfit())
     assert.Equal(t,false					,bidsList[0].GetIsAdjusted()	)
 
+	_,err = c.AddBid(ctx,&pb.Ledger{InvestorId:i2.GetId(),SellOrderId:soId.GetId(),Size:"50",Amount:"40"})
+    assert.NotNil(t,err)
+	//fmt.Println(err)
+
+	stream, err = c.ListClients(ctx,&pb.IsInvestor{IsInvestor:true})
+	assert.Nil(t,err)
+
+	investorsList = generateListClients(t,stream)
+	assert.Equal(t,"222"			,investorsList[2].GetFiscalIdentity()	)
+    assert.Equal(t,"20.00"			,investorsList[2].GetBalance()			)
+    assert.Equal(t,true			    ,investorsList[2].GetIsInvestor()		)
+
+	streamBids,err = c.ListBids(ctx,&pb.Empty{})
+    assert.Nil(t,err)
+	bidsList = generateListBids(t,streamBids )
+	// not inserted in the ledger
+	assert.Equal(t,1						,len(soList)					)
+    assert.Equal(t,i1.GetId()				,bidsList[0].GetInvestorId()	)
+    assert.Equal(t,soId.GetId()				,bidsList[0].GetSellOrderId()	)
+    assert.Equal(t,"50.00"					,bidsList[0].GetSize()			)
+    assert.Equal(t,"40.00"					,bidsList[0].GetAmount()		)
+    assert.Equal(t,"1960.00"				,bidsList[0].GetBalance()		)
+    assert.Equal(t,"20.00"					,bidsList[0].GetDiscount()		)
+    assert.Equal(t,"10.00"					,bidsList[0].GetExpectedProfit())
+    assert.Equal(t,false					,bidsList[0].GetIsAdjusted()	)
+
+	fmt.Println("End tests")
 }
 
 

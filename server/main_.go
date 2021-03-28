@@ -42,7 +42,7 @@ func (s *server) RemoveClient(ctx context.Context, in *pb.Id) (*pb.Empty, error)
 
 func (s *server) ListClients(in *pb.IsInvestor,stream pb.ArexServices_ListClientsServer) error {
 	var toRet []models.Client
-	res:= s.db.Where("is_investor = ?", in.GetIsInvestor()).Find(&toRet)
+	res:= s.db.Order("id").Where("is_investor = ?", in.GetIsInvestor()).Find(&toRet)
 	if res.Error != nil {
 		return res.Error
 	}
@@ -77,7 +77,7 @@ func (s *server) ListSellOrders	(in *pb.Empty,stream pb.ArexServices_ListSellOrd
 //<<var toRet []models.Ledger>>
 //<<var toRet []models.Invoice>>
 	var toRet []models.SellOrder
-	res:= s.db.Find(&toRet)
+	res:= s.db.Order("id").Find(&toRet)
 	if res.Error != nil {
 		return res.Error
 	}
