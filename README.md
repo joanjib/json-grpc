@@ -9,7 +9,7 @@ Made with:
 - Compilation directives in Makefiles
 - Docker compose file in the root directory
 
-The following project is an improvement of the arex repository APP.
+The following project is animprovement of the arex repository APP.
 
 The main two improvements are made into the "utilities" directory. 
 - error_track: this utility tries to bring a kind of Exceptions to the Golang (check server/main_.go)
@@ -29,6 +29,9 @@ Directory structure:
  
  
 File nomenclature:
+- files ended with "_.go" are files that need to be processed with the utility error_track because code contains exceptions.
+- files ended with "__go" are files that contains macro expansions and need to be processed with the macro_expansion utilitity. 
+The final code is always .go file, and Makefiles into each directoty facilitate this process of code generation and transformation.
 
 
 
@@ -40,7 +43,7 @@ In order to persist data in local hard drive please, create the "./pgsql-data" b
 For starting the service on Linux machines:
 sudo docker-compose up -d
 
-The first time docker compose starts, it will create the tables and all necessary SQL objects. To warn the server for this initial creation execute the command in the root of the project "touch new". This command will create an empty file. If the server on start up detects this file will create the basic sql types of the APP and the special SQL function add_bid.
+The first time docker compose starts, it will create the tables and all necessary SQL objects. To warn the server for this initial creation execute the command in the root of the project "touch new". This command will create an empty file named "new". If the server on start up detects this file will create the basic sql types of the APP and the special SQL function add_bid.
 
 When it's not the first time the APP is started, remove the "new" file.
 
