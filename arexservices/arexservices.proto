@@ -78,7 +78,6 @@ service ArexServices {
 	// Bidding API: process done into the Ledger.
 	// Add a Bid in the Ledger and returns the Id of the Ledger entry 
 	rpc AddBid			(Ledger)		returns (Id)				{}
-	rpc RemoveBid		(Id)			returns (Empty)				{}
 	// list all bids in all states
 	rpc ListBids		(Empty)			returns (stream Ledger)		{}
 

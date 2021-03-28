@@ -31,7 +31,6 @@ type ArexServicesClient interface {
 	// Bidding API: process done into the Ledger.
 	// Add a Bid in the Ledger and returns the Id of the Ledger entry
 	AddBid(ctx context.Context, in *Ledger, opts ...grpc.CallOption) (*Id, error)
-	RemoveBid(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error)
 	// list all bids in all states
 	ListBids(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListBidsClient, error)
 }
@@ -176,15 +175,6 @@ func (c *arexServicesClient) AddBid(ctx context.Context, in *Ledger, opts ...grp
 	return out, nil
 }
 
-func (c *arexServicesClient) RemoveBid(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Empty, error) {
-	out := new(Empty)
-	err := c.cc.Invoke(ctx, "/arexservices.ArexServices/RemoveBid", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *arexServicesClient) ListBids(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ArexServices_ListBidsClient, error) {
 	stream, err := c.cc.NewStream(ctx, &ArexServices_ServiceDesc.Streams[3], "/arexservices.ArexServices/ListBids", opts...)
 	if err != nil {
@@ -234,7 +224,6 @@ type ArexServicesServer interface {
 	// Bidding API: process done into the Ledger.
 	// Add a Bid in the Ledger and returns the Id of the Ledger entry
 	AddBid(context.Context, *Ledger) (*Id, error)
-	RemoveBid(context.Context, *Id) (*Empty, error)
 	// list all bids in all states
 	ListBids(*Empty, ArexServices_ListBidsServer) error
 	mustEmbedUnimplementedArexServicesServer()
@@ -264,9 +253,6 @@ func (UnimplementedArexServicesServer) ListInvoices(*Empty, ArexServices_ListInv
 }
 func (UnimplementedArexServicesServer) AddBid(context.Context, *Ledger) (*Id, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddBid not implemented")
-}
-func (UnimplementedArexServicesServer) RemoveBid(context.Context, *Id) (*Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveBid not implemented")
 }
 func (UnimplementedArexServicesServer) ListBids(*Empty, ArexServices_ListBidsServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListBids not implemented")
@@ -419,24 +405,6 @@ func _ArexServices_AddBid_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ArexServices_RemoveBid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Id)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ArexServicesServer).RemoveBid(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/arexservices.ArexServices/RemoveBid",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ArexServicesServer).RemoveBid(ctx, req.(*Id))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ArexServices_ListBids_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Empty)
 	if err := stream.RecvMsg(m); err != nil {
@@ -480,10 +448,6 @@ var ArexServices_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddBid",
 			Handler:    _ArexServices_AddBid_Handler,
-		},
-		{
-			MethodName: "RemoveBid",
-			Handler:    _ArexServices_RemoveBid_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
