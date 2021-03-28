@@ -28,6 +28,9 @@ Directory structure:
   - The rest are just examples and utilities
 - arexservices: the definition of the gRPC  API in .proto file and the generated .go files. Contains an script to generate the go files from the .proto file.
 - client: single file with all test to the server made from the client side (gRPC)
+  - empty.sql: script to empty the tables of the database
+  - client_test__.go. main testing file
+  - test-all.sh: script to start the testing process. 
 - db: configuration and creation of the gorm db object.
  
  
