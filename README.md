@@ -11,9 +11,11 @@ Made with:
 
 The following project is an improvement of the arex repository APP.
 
-The main two improvements are made into the "utilities" directory. 
+Two improvements are made into the "utilities" directory. 
 - error_track: this utility tries to bring a kind of Exceptions to the Golang (check server/main_.go)
-- macro_expansion: sometimes macros are very useful specially when your are dealing with generated code (gRPC). Thanks to this utility it's reduced the amount of code necessary to implement repetitive APIs
+- macro_expansion: sometimes macros are very useful specially when your are dealing with generated code (gRPC). Thanks to this utility it's reduced the amount of code necessary to implement repetitive APIs. This utility brings a kind of macro system to golang.
+
+It's also used a ORM : gorm, to reduce the amount of code. All entities are centralized in the models.go file. In the persiscence are used personalized domains and types (SQL), Gorm (Go) and SQL functions to do the most costly operarions into the database itself.
 
 Directory structure:
 
@@ -23,15 +25,17 @@ Directory structure:
 - sql: all sql scrips. The main ones are:
   - add_bid.sql: processes a bid
   - types-domains.sql: basic sql types and domains used in the app
-- arexservices: the definition in .proto file and the generated .go files. Contains an script to generate the go files from the .proto file.
+  - The rest are just examples and utilities
+- arexservices: the definition of the gRPC  API in .proto file and the generated .go files. Contains an script to generate the go files from the .proto file.
 - client: single file with all test to the server made from the client side (gRPC)
 - db: configuration and creation of the gorm db object.
  
  
 File nomenclature:
-- files ended with "_.go" are files that need to be processed with the utility error_track because code contains exceptions.
-- files ended with "__go" are files that contains macro expansions and need to be processed with the macro_expansion utilitity. 
-The final code is always .go file, and Makefiles into each directoty facilitate this process of code generation and transformation.
+- Files ended with "_.go" are files that need to be processed with the utility error_track because code contains exceptions.
+- Files ended with "__go" are files that contains macro expansions and need to be processed with the macro_expansion utilitity. 
+- Files ended with ".go" are the actual code.
+The final code is always .go file, and Makefiles into each directoty make easier this process of code generation and transformation.
 
 
 
