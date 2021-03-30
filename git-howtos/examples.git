@@ -1,0 +1,29 @@
+  679  28/03/21 19:46:46 decript github.enc 
+  730  28/03/21 19:25:43 cat .gitignore 
+  731  28/03/21 19:25:51 cp  .gitignore ../num
+  740  28/03/21 19:26:30 commit -m "added gitignore file to do not save the directory of the database"
+  771  28/03/21 19:37:39 history | fgrep git 
+  783  28/03/21 19:41:20 git remote add origin https://github.com/joanjib/num
+  784  28/03/21 19:41:32 git remote -v
+  785  28/03/21 19:41:56 git push origin main
+  786  28/03/21 19:42:55 git push 
+  788  28/03/21 19:44:41 git init -b main
+  789  28/03/21 19:46:11 git branch -m master main
+  790  28/03/21 19:46:21 git push origin main
+  791  28/03/21 19:53:40 git remote add origin https://github.com/joanjib/num.git
+  792  28/03/21 19:54:21 git remote -v
+  793  28/03/21 19:55:54 git remote rm origin
+  794  28/03/21 19:55:56 git remote -v
+  795  28/03/21 19:56:11 git remote add origin https://github.com/joanjib/num.git
+  796  28/03/21 19:56:18 git push -u origin main
+  898  29/03/21 17:18:53 git push -u origin main
+  905  29/03/21 17:23:06 git clone https://github.com/joanjib/num
+  910  29/03/21 17:26:04 diff -qr num/ ../num.old/ | fgrep -v ".git"
+  912  29/03/21 17:26:06 diff -qr num/ ../num.old/ | fgrep -v ".git"
+  923  29/03/21 17:28:49 git push -u origin main
+  972  29/03/21 17:59:57 git push -u origin main
+  977  29/03/21 17:19:30 decript github.enc 
+ 1022  30/03/21 12:47:43 go get github.com/gofiber/fiber/v2
+ 1024  30/03/21 12:48:51 mkdir git-howtos
+ 1025  30/03/21 12:48:53 cd git-howtos/
+ 1026  30/03/21 12:49:11 history | fgrep git > examples.git

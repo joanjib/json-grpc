@@ -3,6 +3,7 @@ module num
 go 1.15
 
 require (
+	github.com/gofiber/fiber/v2 v2.7.1 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/stretchr/testify v1.7.0
