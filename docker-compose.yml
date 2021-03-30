@@ -7,7 +7,7 @@ services:
         volumes:
             - .:/go/arex
         working_dir: /go/arex
-        command: go run ./server/main.go
+        command: go run ./grpc-server/main.go
         depends_on: 
             - db
     webclient:

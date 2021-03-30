@@ -19,7 +19,8 @@ It's also used a ORM : gorm, to reduce the amount of code. All entities are cent
 
 Directory structure:
 
-- server: contains the main.go file needed to start the server.
+- grpc-server: contains the main.go file needed to start the server to serve the gRPC API
+- json-server: will contain the gofiber server serving the REST API
 - utils: contains an utility to connect a client to the server using gRPC.
 - models: single go file with all models and cast functions to cast instances of gorm to instances of gRPC and viceversa.
 - sql: all sql scrips. The main ones are:
